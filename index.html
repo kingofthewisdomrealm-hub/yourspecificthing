@@ -53,11 +53,11 @@
     text-transform: uppercase; color: var(--muted);
   }
   .screen {
-    min-height: 100dvh; padding: 96px 24px 64px;
+    min-height: 100dvh; padding: 96px 24px 96px;
     display: none; flex-direction: column; justify-content: center;
     max-width: 1120px; margin: 0 auto;
   }
-  @media (min-width: 640px) { .screen { padding: 112px 32px 80px; } }
+  @media (min-width: 640px) { .screen { padding: 112px 32px 104px; } }
   .screen.active { display: flex; }
   .screen-map { justify-content: flex-start; }
   h1 {
@@ -192,6 +192,16 @@
     from { opacity: 0; transform: translateY(18px); filter: blur(8px); }
     to { opacity: 1; transform: none; filter: none; }
   }
+  footer.brand {
+    position: fixed; inset: auto 0 0 0; z-index: 10;
+    pointer-events: none;
+  }
+  footer.brand p { pointer-events: auto; text-align: center; padding: 20px 24px; }
+  footer.brand a {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--faint);
+  }
+  footer.brand a:hover { color: var(--muted); }
   @media (prefers-reduced-motion: reduce) {
     .rise, .rise-2, .rise-3, .rise-4 { animation: none; }
     .fill, .traveler { transition: none; }
@@ -205,6 +215,10 @@
     <span class="meta" id="header-meta"></span>
   </div>
 </header>
+
+<footer class="brand">
+  <p><a href="https://rulerofwisdom.com" target="_blank" rel="noopener noreferrer">This is a Ruler of Wisdom product · rulerofwisdom.com</a></p>
+</footer>
 
 <main>
   <section class="screen active" id="screen-land">
@@ -248,28 +262,24 @@
           <p class="kicker">Here</p>
           <p class="pole-text" id="pole-here-text"></p>
         </div>
-
         <div class="road road-h" id="road-h">
           <div class="track"></div>
           <div class="fill" id="fill-h"></div>
           <div class="traveler" id="traveler-h"></div>
           <ol class="slots" id="slots-h"></ol>
         </div>
-
         <div class="road road-v" id="road-v">
           <div class="track"></div>
           <div class="fill" id="fill-v"></div>
           <div class="traveler" id="traveler-v"></div>
           <ol class="slots" id="slots-v"></ol>
         </div>
-
         <div class="pole pole-there">
           <p class="kicker">There</p>
           <p class="pole-text" id="pole-there-text"></p>
         </div>
       </div>
     </div>
-
     <div class="edge">
       <p class="kicker">This week · +25 XP</p>
       <p class="lede">What’s one tiny step you take action on right now?</p>
@@ -324,16 +334,7 @@
   var KEY = "yst-board-v5";
   var STEP_CAP = 8;
   var XP_PER = 25;
-
-  var state = {
-    phase: "land",
-    there: "",
-    here: "",
-    steps: [],
-    xp: 0,
-    lastMove: ""
-  };
-
+  var state = { phase: "land", there: "", here: "", steps: [], xp: 0, lastMove: "" };
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
@@ -350,37 +351,24 @@
       else state.phase = "land";
     } catch (e) {}
   }
-
   function save() {
     if (!state.there) return;
-    localStorage.setItem(KEY, JSON.stringify({
-      there: state.there,
-      here: state.here,
-      steps: state.steps,
-      xp: state.xp,
-      lastMove: state.lastMove
-    }));
+    localStorage.setItem(KEY, JSON.stringify({ there: state.there, here: state.here, steps: state.steps, xp: state.xp, lastMove: state.lastMove }));
   }
-
   function shortMark(text) {
     return text.trim().split(/\s+/).slice(0, 3).join(" ").slice(0, 22);
   }
-
   function show(phase) {
     state.phase = phase;
     ["land", "there", "here", "map", "done"].forEach(function (id) {
       document.getElementById("screen-" + id).classList.toggle("active", id === phase);
     });
     var meta = document.getElementById("header-meta");
-    if (phase === "map" || phase === "done") {
-      meta.textContent = "XP " + state.xp;
-    } else {
-      meta.textContent = "";
-    }
+    if (phase === "map" || phase === "done") meta.textContent = "XP " + state.xp;
+    else meta.textContent = "";
     if (phase === "map") renderMap();
     if (phase === "done") renderDone();
   }
-
   function renderSlots(ol) {
     ol.innerHTML = "";
     for (var i = 0; i < STEP_CAP; i++) {
@@ -396,7 +384,6 @@
       ol.appendChild(li);
     }
   }
-
   function renderMap() {
     document.getElementById("pole-here-text").textContent = state.here;
     document.getElementById("pole-there-text").textContent = state.there;
@@ -411,7 +398,6 @@
     document.getElementById("input-step").value = "";
     document.getElementById("btn-step").disabled = true;
   }
-
   function renderDone() {
     document.getElementById("done-here-text").textContent = state.here;
     document.getElementById("done-there-text").textContent = state.there;
@@ -421,7 +407,6 @@
     renderSlots(document.getElementById("done-slots-v"));
     document.getElementById("header-meta").textContent = "XP " + state.xp;
   }
-
   function reset() {
     localStorage.removeItem(KEY);
     state = { phase: "land", there: "", here: "", steps: [], xp: 0, lastMove: "" };
@@ -432,13 +417,9 @@
     document.getElementById("btn-here").disabled = true;
     show("land");
   }
-
   document.getElementById("brand").addEventListener("click", reset);
-  document.getElementById("btn-begin").addEventListener("click", function () {
-    show("there");
-  });
+  document.getElementById("btn-begin").addEventListener("click", function () { show("there"); });
   document.getElementById("btn-again").addEventListener("click", reset);
-
   document.getElementById("input-there").addEventListener("input", function () {
     document.getElementById("btn-there").disabled = this.value.trim().length < 4;
   });
@@ -448,40 +429,26 @@
   document.getElementById("input-step").addEventListener("input", function () {
     document.getElementById("btn-step").disabled = this.value.trim().length < 3;
   });
-
   document.getElementById("form-there").addEventListener("submit", function (e) {
     e.preventDefault();
     var v = document.getElementById("input-there").value.trim();
     if (v.length < 4) return;
-    state.there = v;
-    save();
-    show("here");
+    state.there = v; save(); show("here");
   });
-
   document.getElementById("form-here").addEventListener("submit", function (e) {
     e.preventDefault();
     var v = document.getElementById("input-here").value.trim();
     if (v.length < 4) return;
-    state.here = v;
-    state.steps = [];
-    state.xp = 0;
-    state.lastMove = "";
-    save();
-    show("map");
+    state.here = v; state.steps = []; state.xp = 0; state.lastMove = ""; save(); show("map");
   });
-
   document.getElementById("form-step").addEventListener("submit", function (e) {
     e.preventDefault();
     var v = document.getElementById("input-step").value.trim();
     if (v.length < 3) return;
-    state.steps.push(v);
-    state.xp += XP_PER;
-    state.lastMove = v;
-    save();
+    state.steps.push(v); state.xp += XP_PER; state.lastMove = v; save();
     if (state.steps.length >= STEP_CAP) show("done");
     else renderMap();
   });
-
   load();
   show(state.phase);
   if (state.there) document.getElementById("input-there").value = state.there;
