@@ -1,3 +1,5 @@
 # Your Specific Thing
 
-Talk page at https://yourspecificthing.com
+The game. Live at [yourspecificthing.com](https://yourspecificthing.com).
+
+Name the specific thing. Name where you are. Fill the empty road with tiny steps.
