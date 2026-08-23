@@ -351,6 +351,26 @@
       else state.phase = "land";
     } catch (e) {}
   }
+
+  function sid() {
+    try {
+      var k = "yst-sid-v1";
+      var v = localStorage.getItem(k);
+      if (v && v.length >= 8) return v;
+      v = (crypto.randomUUID && crypto.randomUUID()) || ("s-" + Date.now() + "-" + Math.random().toString(36).slice(2,10));
+      localStorage.setItem(k, v);
+      return v;
+    } catch (e) { return "s-" + Date.now(); }
+  }
+  function log(kind, text) {
+    try {
+      fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: sid(), kind: kind, text: text || "" })
+      }).catch(function () {});
+    } catch (e) {}
+  }
   function save() {
     if (!state.there) return;
     localStorage.setItem(KEY, JSON.stringify({ there: state.there, here: state.here, steps: state.steps, xp: state.xp, lastMove: state.lastMove }));
@@ -408,7 +428,7 @@
     document.getElementById("header-meta").textContent = "XP " + state.xp;
   }
   function reset() {
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(KEY); try { localStorage.removeItem("yst-sid-v1"); } catch (e) {}
     state = { phase: "land", there: "", here: "", steps: [], xp: 0, lastMove: "" };
     document.getElementById("input-there").value = "";
     document.getElementById("input-here").value = "";
@@ -433,20 +453,20 @@
     e.preventDefault();
     var v = document.getElementById("input-there").value.trim();
     if (v.length < 4) return;
-    state.there = v; save(); show("here");
+    state.there = v; save(); log("there", v); show("here");
   });
   document.getElementById("form-here").addEventListener("submit", function (e) {
     e.preventDefault();
     var v = document.getElementById("input-here").value.trim();
     if (v.length < 4) return;
-    state.here = v; state.steps = []; state.xp = 0; state.lastMove = ""; save(); show("map");
+    state.here = v; state.steps = []; state.xp = 0; state.lastMove = ""; save(); log("here", v); show("map");
   });
   document.getElementById("form-step").addEventListener("submit", function (e) {
     e.preventDefault();
     var v = document.getElementById("input-step").value.trim();
     if (v.length < 3) return;
-    state.steps.push(v); state.xp += XP_PER; state.lastMove = v; save();
-    if (state.steps.length >= STEP_CAP) show("done");
+    state.steps.push(v); state.xp += XP_PER; state.lastMove = v; save(); log("step", v);
+    if (state.steps.length >= STEP_CAP) { log("done"); show("done"); }
     else renderMap();
   });
   load();
