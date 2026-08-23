@@ -1,1 +1,492 @@
-<PLACEHOLDER>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Specific Thing</title>
+<meta name="description" content="What is your specific thing? Name it. The board is everything between here and there.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://yourspecificthing.com">
+<meta property="og:title" content="Your Specific Thing">
+<meta property="og:description" content="What is your specific thing? Name it. The board is everything between here and there.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --elevated: #111113;
+    --fg: #f5f5f7;
+    --muted: #86868b;
+    --faint: #6e6e73;
+    --line: rgb(245 245 247 / 0.12);
+    --ink: #0a0a0b;
+    --hero: clamp(2.75rem, 8.4vw, 6.5rem);
+    --display: clamp(1.75rem, 4.4vw, 3.25rem);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; background: var(--bg); }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; min-height: 100dvh; }
+  h1, h2 { text-wrap: balance; font-weight: 500; letter-spacing: -0.045em; }
+  p { text-wrap: pretty; margin: 0; }
+  button { cursor: pointer; font: inherit; border: 0; }
+  ::selection { background: var(--fg); color: var(--bg); }
+  header {
+    position: fixed; inset: 0 0 auto 0; z-index: 20;
+    background: rgb(10 10 11 / 0.7); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    max-width: 1120px; margin: 0 auto; padding: 0 24px;
+    display: flex; height: 56px; align-items: center; justify-content: space-between;
+  }
+  @media (min-width: 640px) { .nav { height: 64px; padding: 0 32px; } }
+  .word {
+    background: none; color: var(--fg); font-size: 13px; font-weight: 500;
+    letter-spacing: -0.01em; padding: 0;
+  }
+  .meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .kicker {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .screen {
+    min-height: 100dvh; padding: 96px 24px 64px;
+    display: none; flex-direction: column; justify-content: center;
+    max-width: 1120px; margin: 0 auto;
+  }
+  @media (min-width: 640px) { .screen { padding: 112px 32px 80px; } }
+  .screen.active { display: flex; }
+  .screen-map { justify-content: flex-start; }
+  h1 {
+    margin: 24px 0 0; max-width: 12ch; font-size: var(--hero);
+    line-height: 1.04; font-weight: 600;
+  }
+  h2 {
+    margin: 24px 0 0; max-width: 16ch; font-size: var(--display);
+    line-height: 1.22; font-weight: 500;
+  }
+  .lede { margin-top: 28px; max-width: 28rem; font-size: 1.125rem; line-height: 1.55; color: var(--muted); }
+  .narrow { max-width: 36rem; width: 100%; }
+  form { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+  textarea {
+    width: 100%; min-height: 8rem; resize: none; border-radius: 18px;
+    border: 1px solid var(--line); background: var(--elevated); color: var(--fg);
+    padding: 18px 20px; font-size: 1.0625rem; line-height: 1.5; outline: none;
+    font-family: inherit;
+  }
+  textarea:focus { border-color: rgb(245 245 247 / 0.4); }
+  textarea::placeholder { color: var(--faint); }
+  .btn {
+    display: inline-flex; min-height: 48px; align-items: center; justify-content: center;
+    padding: 0 28px; border-radius: 999px; background: var(--fg); color: var(--ink);
+    font-size: 15px; font-weight: 500; transition: transform 150ms ease-out, background 150ms ease-out;
+    align-self: flex-start;
+  }
+  .btn:hover { background: rgb(245 245 247 / 0.9); }
+  .btn:active { transform: scale(0.96); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent; color: var(--fg); border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: rgb(245 245 247 / 0.06); }
+  .map-wrap { width: 100%; margin-top: 48px; }
+  .map-row {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  @media (min-width: 1024px) {
+    .map-row { flex-direction: row; gap: 24px; align-items: center; }
+  }
+  .pole {
+    width: 9rem; height: 9rem; border-radius: 999px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 1rem;
+  }
+  @media (min-width: 640px) { .pole { width: 11rem; height: 11rem; } }
+  .pole-here { border: 1px solid var(--line); background: var(--elevated); }
+  .pole-there { background: var(--fg); color: var(--ink); }
+  .pole .kicker { font-size: 10px; }
+  .pole-there .kicker { opacity: 0.5; color: inherit; }
+  .pole-text {
+    margin-top: 8px; font-size: 13px; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .road {
+    position: relative; width: 100%; flex: 1; min-height: 4rem;
+  }
+  .road-h { display: none; }
+  .road-v { display: block; min-height: 16rem; }
+  @media (min-width: 1024px) {
+    .road-h { display: block; min-height: 4rem; }
+    .road-v { display: none; }
+  }
+  .track {
+    position: absolute; background: transparent;
+  }
+  .road-h .track {
+    top: 50%; left: 0; right: 0; height: 0;
+    border-top: 1px dashed var(--line); transform: translateY(-50%);
+  }
+  .road-v .track {
+    left: 50%; top: 0; bottom: 0; width: 0;
+    border-left: 1px dashed var(--line); transform: translateX(-50%);
+  }
+  .fill {
+    position: absolute; background: var(--fg);
+    transition: width 250ms var(--ease), height 250ms var(--ease);
+  }
+  .road-h .fill {
+    top: 50%; left: 0; height: 1px; width: 0%; transform: translateY(-50%);
+  }
+  .road-v .fill {
+    left: 50%; top: 0; width: 1px; height: 0%; transform: translateX(-50%);
+  }
+  .traveler {
+    position: absolute; width: 10px; height: 10px; border-radius: 999px;
+    background: var(--fg); z-index: 10;
+    transition: left 250ms var(--ease), top 250ms var(--ease);
+  }
+  .road-h .traveler { top: 50%; left: 0%; transform: translate(-50%, -50%); }
+  .road-v .traveler { left: 50%; top: 0%; transform: translate(-50%, -50%); }
+  .slots {
+    position: relative; z-index: 5; list-style: none; margin: 0; padding: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 4rem;
+  }
+  .road-v .slots {
+    flex-direction: column; height: 16rem; padding: 4px 0;
+  }
+  .slot {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    max-width: 6rem;
+  }
+  .road-v .slot { flex-direction: row; gap: 12px; max-width: none; }
+  .dot {
+    width: 12px; height: 12px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--bg); flex-shrink: 0;
+  }
+  .dot.filled { background: var(--fg); border-color: var(--fg); }
+  .mark {
+    font-size: 11px; line-height: 1.3; color: var(--muted); text-align: center;
+  }
+  .road-v .mark { width: 7rem; text-align: left; }
+  .edge {
+    margin: 56px auto 0; max-width: 36rem; width: 100%;
+  }
+  .edge .lede { margin-top: 16px; color: var(--fg); }
+  .edge form { margin-top: 32px; }
+  .edge textarea { min-height: 5rem; }
+  .done-list { margin-top: 56px; max-width: 36rem; border-top: 1px solid var(--line); padding-top: 32px; }
+  .done-list dt {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--faint);
+  }
+  .done-list dd { margin: 12px 0 28px; font-size: 1.0625rem; line-height: 1.5; }
+  .rise { animation: rise 700ms var(--ease) both; }
+  .rise-2 { animation-delay: 90ms; }
+  .rise-3 { animation-delay: 170ms; }
+  .rise-4 { animation-delay: 250ms; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); filter: blur(8px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rise, .rise-2, .rise-3, .rise-4 { animation: none; }
+    .fill, .traveler { transition: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <button type="button" class="word" id="brand">Your Specific Thing</button>
+    <span class="meta" id="header-meta"></span>
+  </div>
+</header>
+
+<main>
+  <section class="screen active" id="screen-land">
+    <div>
+      <h1 class="rise">What is your specific thing?</h1>
+      <p class="lede rise rise-2">Say it. Then tell the truth about where you are. The road in between starts empty.</p>
+      <div class="rise rise-3" style="margin-top:48px">
+        <button type="button" class="btn" id="btn-begin">Begin</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-there">
+    <div class="narrow">
+      <p class="kicker">The goal</p>
+      <h2>What is your specific thing?</h2>
+      <p class="lede">Say it simply. One sentence. If you got exactly what you came for — what would you have?</p>
+      <form id="form-there">
+        <textarea id="input-there" maxlength="280" required aria-label="Your specific thing" placeholder="I want…"></textarea>
+        <button type="submit" class="btn" id="btn-there" disabled>That’s it</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-here">
+    <div class="narrow">
+      <p class="kicker">Where you are</p>
+      <h2>What’s the truth right now?</h2>
+      <p class="lede">Don’t dress it up. The job, the hours, what’s missing. This is the left circle.</p>
+      <form id="form-here">
+        <textarea id="input-here" maxlength="280" required aria-label="The truth right now" placeholder="Right now I…"></textarea>
+        <button type="submit" class="btn" id="btn-here" disabled>See the map</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="screen screen-map" id="screen-map">
+    <div class="map-wrap">
+      <div class="map-row">
+        <div class="pole pole-here">
+          <p class="kicker">Here</p>
+          <p class="pole-text" id="pole-here-text"></p>
+        </div>
+
+        <div class="road road-h" id="road-h">
+          <div class="track"></div>
+          <div class="fill" id="fill-h"></div>
+          <div class="traveler" id="traveler-h"></div>
+          <ol class="slots" id="slots-h"></ol>
+        </div>
+
+        <div class="road road-v" id="road-v">
+          <div class="track"></div>
+          <div class="fill" id="fill-v"></div>
+          <div class="traveler" id="traveler-v"></div>
+          <ol class="slots" id="slots-v"></ol>
+        </div>
+
+        <div class="pole pole-there">
+          <p class="kicker">There</p>
+          <p class="pole-text" id="pole-there-text"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="edge">
+      <p class="kicker">This week · +25 XP</p>
+      <p class="lede">What’s one tiny step you take action on right now?</p>
+      <form id="form-step">
+        <textarea id="input-step" maxlength="200" aria-label="One tiny step"></textarea>
+        <button type="submit" class="btn" id="btn-step" disabled>I did this</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="screen screen-map" id="screen-done">
+    <div>
+      <p class="kicker">There</p>
+      <h2>You filled the road.</h2>
+    </div>
+    <div class="map-wrap">
+      <div class="map-row">
+        <div class="pole pole-here">
+          <p class="kicker">Here</p>
+          <p class="pole-text" id="done-here-text"></p>
+        </div>
+        <div class="road road-h">
+          <div class="track"></div>
+          <div class="fill" id="done-fill-h" style="width:100%"></div>
+          <div class="traveler" style="left:100%"></div>
+          <ol class="slots" id="done-slots-h"></ol>
+        </div>
+        <div class="road road-v">
+          <div class="track"></div>
+          <div class="fill" id="done-fill-v" style="height:100%"></div>
+          <div class="traveler" style="top:100%"></div>
+          <ol class="slots" id="done-slots-v"></ol>
+        </div>
+        <div class="pole pole-there">
+          <p class="kicker">There</p>
+          <p class="pole-text" id="done-there-text"></p>
+        </div>
+      </div>
+    </div>
+    <dl class="done-list">
+      <dt>XP</dt>
+      <dd id="done-xp">0</dd>
+      <dt>Last step</dt>
+      <dd id="done-last"></dd>
+    </dl>
+    <button type="button" class="btn btn-ghost" id="btn-again" style="margin-top:32px">New board</button>
+  </section>
+</main>
+
+<script>
+(function () {
+  var KEY = "yst-board-v5";
+  var STEP_CAP = 8;
+  var XP_PER = 25;
+
+  var state = {
+    phase: "land",
+    there: "",
+    here: "",
+    steps: [],
+    xp: 0,
+    lastMove: ""
+  };
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      state.there = saved.there || "";
+      state.here = saved.here || "";
+      state.steps = Array.isArray(saved.steps) ? saved.steps : [];
+      state.xp = saved.xp || 0;
+      state.lastMove = saved.lastMove || "";
+      if (state.steps.length >= STEP_CAP) state.phase = "done";
+      else if (state.here) state.phase = "map";
+      else if (state.there) state.phase = "there";
+      else state.phase = "land";
+    } catch (e) {}
+  }
+
+  function save() {
+    if (!state.there) return;
+    localStorage.setItem(KEY, JSON.stringify({
+      there: state.there,
+      here: state.here,
+      steps: state.steps,
+      xp: state.xp,
+      lastMove: state.lastMove
+    }));
+  }
+
+  function shortMark(text) {
+    return text.trim().split(/\s+/).slice(0, 3).join(" ").slice(0, 22);
+  }
+
+  function show(phase) {
+    state.phase = phase;
+    ["land", "there", "here", "map", "done"].forEach(function (id) {
+      document.getElementById("screen-" + id).classList.toggle("active", id === phase);
+    });
+    var meta = document.getElementById("header-meta");
+    if (phase === "map" || phase === "done") {
+      meta.textContent = "XP " + state.xp;
+    } else {
+      meta.textContent = "";
+    }
+    if (phase === "map") renderMap();
+    if (phase === "done") renderDone();
+  }
+
+  function renderSlots(ol) {
+    ol.innerHTML = "";
+    for (var i = 0; i < STEP_CAP; i++) {
+      var li = document.createElement("li");
+      li.className = "slot";
+      var dot = document.createElement("span");
+      dot.className = "dot" + (i < state.steps.length ? " filled" : "");
+      var mark = document.createElement("span");
+      mark.className = "mark";
+      mark.textContent = i < state.steps.length ? shortMark(state.steps[i]) : "";
+      li.appendChild(dot);
+      li.appendChild(mark);
+      ol.appendChild(li);
+    }
+  }
+
+  function renderMap() {
+    document.getElementById("pole-here-text").textContent = state.here;
+    document.getElementById("pole-there-text").textContent = state.there;
+    var pct = Math.round((state.steps.length / STEP_CAP) * 100);
+    document.getElementById("fill-h").style.width = pct + "%";
+    document.getElementById("fill-v").style.height = pct + "%";
+    document.getElementById("traveler-h").style.left = pct + "%";
+    document.getElementById("traveler-v").style.top = pct + "%";
+    renderSlots(document.getElementById("slots-h"));
+    renderSlots(document.getElementById("slots-v"));
+    document.getElementById("header-meta").textContent = "XP " + state.xp;
+    document.getElementById("input-step").value = "";
+    document.getElementById("btn-step").disabled = true;
+  }
+
+  function renderDone() {
+    document.getElementById("done-here-text").textContent = state.here;
+    document.getElementById("done-there-text").textContent = state.there;
+    document.getElementById("done-xp").textContent = String(state.xp);
+    document.getElementById("done-last").textContent = state.lastMove;
+    renderSlots(document.getElementById("done-slots-h"));
+    renderSlots(document.getElementById("done-slots-v"));
+    document.getElementById("header-meta").textContent = "XP " + state.xp;
+  }
+
+  function reset() {
+    localStorage.removeItem(KEY);
+    state = { phase: "land", there: "", here: "", steps: [], xp: 0, lastMove: "" };
+    document.getElementById("input-there").value = "";
+    document.getElementById("input-here").value = "";
+    document.getElementById("input-step").value = "";
+    document.getElementById("btn-there").disabled = true;
+    document.getElementById("btn-here").disabled = true;
+    show("land");
+  }
+
+  document.getElementById("brand").addEventListener("click", reset);
+  document.getElementById("btn-begin").addEventListener("click", function () {
+    show("there");
+  });
+  document.getElementById("btn-again").addEventListener("click", reset);
+
+  document.getElementById("input-there").addEventListener("input", function () {
+    document.getElementById("btn-there").disabled = this.value.trim().length < 4;
+  });
+  document.getElementById("input-here").addEventListener("input", function () {
+    document.getElementById("btn-here").disabled = this.value.trim().length < 4;
+  });
+  document.getElementById("input-step").addEventListener("input", function () {
+    document.getElementById("btn-step").disabled = this.value.trim().length < 3;
+  });
+
+  document.getElementById("form-there").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = document.getElementById("input-there").value.trim();
+    if (v.length < 4) return;
+    state.there = v;
+    save();
+    show("here");
+  });
+
+  document.getElementById("form-here").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = document.getElementById("input-here").value.trim();
+    if (v.length < 4) return;
+    state.here = v;
+    state.steps = [];
+    state.xp = 0;
+    state.lastMove = "";
+    save();
+    show("map");
+  });
+
+  document.getElementById("form-step").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = document.getElementById("input-step").value.trim();
+    if (v.length < 3) return;
+    state.steps.push(v);
+    state.xp += XP_PER;
+    state.lastMove = v;
+    save();
+    if (state.steps.length >= STEP_CAP) show("done");
+    else renderMap();
+  });
+
+  load();
+  show(state.phase);
+  if (state.there) document.getElementById("input-there").value = state.there;
+  if (state.here) document.getElementById("input-here").value = state.here;
+})();
+</script>
+</body>
+</html>
