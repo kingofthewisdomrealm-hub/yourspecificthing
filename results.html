@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results — Your Specific Thing</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0a0b; --fg:#f5f5f7; --muted:#86868b; --faint:#6e6e73; --line:rgb(245 245 247 / 0.12); --display:clamp(1.75rem,4.4vw,3.25rem); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:Inter,system-ui,sans-serif; min-height:100dvh; }
+  header { position:fixed; inset:0 0 auto 0; background:rgb(10 10 11 / .7); backdrop-filter:blur(20px); border-bottom:1px solid var(--line); }
+  .nav { max-width:720px; margin:0 auto; padding:0 24px; height:56px; display:flex; align-items:center; justify-content:space-between; }
+  a { color:inherit; text-decoration:none; }
+  .word { font-size:13px; font-weight:500; }
+  .meta { font-size:13px; color:var(--muted); }
+  main { max-width:720px; margin:0 auto; padding:96px 24px 96px; }
+  .kicker { font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); }
+  h1 { margin:16px 0 0; font-size:var(--display); font-weight:500; letter-spacing:-.045em; line-height:1.22; }
+  .lede { margin-top:24px; color:var(--muted); line-height:1.55; }
+  dl { margin:56px 0 0; display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; border-top:1px solid var(--line); padding-top:32px; }
+  dt { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--faint); }
+  dd { margin:12px 0 0; font-size:1.125rem; font-variant-numeric:tabular-nums; }
+  section { margin-top:64px; border-top:1px solid var(--line); padding-top:32px; }
+  ul { list-style:none; margin:24px 0 0; padding:0; }
+  li { display:flex; justify-content:space-between; gap:24px; padding:10px 0; line-height:1.5; }
+  .n { color:var(--faint); font-variant-numeric:tabular-nums; font-size:13px; }
+  footer { position:fixed; inset:auto 0 0 0; text-align:center; padding:20px 24px; }
+  footer a { font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--faint); }
+</style>
+</head>
+<body>
+<header><div class="nav"><a class="word" href="/">Your Specific Thing</a><span class="meta">Results</span></div></header>
+<main id="main"><p class="lede">Loading.</p></main>
+<footer><a href="https://rulerofwisdom.com">This is a Ruler of Wisdom product · rulerofwisdom.com</a></footer>
+<script>
+(async function () {
+  var key = new URLSearchParams(location.search).get("k") || "";
+  var main = document.getElementById("main");
+  function esc(s) {
+    var n = document.createElement("span");
+    n.textContent = String(s);
+    return n.innerHTML;
+  }
+  function list(title, rows) {
+    var items = (rows || []).map(function (r) {
+      return "<li><span>" + esc(r.text) + "</span>" + (r.n > 1 ? "<span class='n'>" + esc(String(r.n)) + "</span>" : "") + "</li>";
+    }).join("");
+    return "<section><p class='kicker'>" + title + "</p>" + (items ? "<ul>" + items + "</ul>" : "<p class='lede'>None yet.</p>") + "</section>";
+  }
+  try {
+    var res = await fetch("/api/results?k=" + encodeURIComponent(key));
+    var json = await res.json();
+    if (!json.ok || !json.results) {
+      main.innerHTML = "<p class='kicker'>Private</p><h1>This page is locked.</h1><p class='lede'>Add the key to the URL. The game does not link here.</p>";
+      return;
+    }
+    var d = json.results;
+    main.innerHTML =
+      "<p class='kicker'>Tracker</p><h1>What people wrote.</h1><p class='lede'>Exact text. Newest first.</p>" +
+      "<dl><div><dt>Boards</dt><dd>" + esc(String(d.boards)) + "</dd></div><div><dt>Steps</dt><dd>" + esc(String(d.steps)) + "</dd></div><div><dt>Roads filled</dt><dd>" + esc(String(d.filled)) + "</dd></div></dl>" +
+      list("Specific things", d.there) + list("The truth right now", d.here) + list("Tiny steps", d.step);
+  } catch (e) {
+    main.innerHTML = "<p class='lede'>Could not load.</p>";
+  }
+})();
+</script>
+</body>
+</html>
