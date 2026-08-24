@@ -1,21 +1,2 @@
-const SVG = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#0a0a0b"/>
-  <text x="72" y="52" font-family="Inter,Helvetica,Arial,sans-serif" font-size="14" letter-spacing="3" fill="#86868b">YOUR SPECIFIC THING</text>
-  <text x="72" y="200" font-family="Inter,Helvetica,Arial,sans-serif" font-size="64" font-weight="600" fill="#f5f5f7">What is your</text>
-  <text x="72" y="280" font-family="Inter,Helvetica,Arial,sans-serif" font-size="64" font-weight="600" fill="#f5f5f7">specific thing?</text>
-  <text x="72" y="380" font-family="Inter,Helvetica,Arial,sans-serif" font-size="24" fill="#86868b">Name it. Tell the truth about where you are.</text>
-  <text x="72" y="420" font-family="Inter,Helvetica,Arial,sans-serif" font-size="24" fill="#86868b">The road in between starts empty.</text>
-  <circle cx="140" cy="530" r="36" fill="none" stroke="#3a3a3c" stroke-width="2"/>
-  <text x="140" y="536" text-anchor="middle" font-family="Inter,Helvetica,Arial,sans-serif" font-size="12" fill="#86868b">HERE</text>
-  <line x1="190" y1="530" x2="1020" y2="530" stroke="#3a3a3c" stroke-width="2"/>
-  <circle cx="1060" cy="530" r="36" fill="#f5f5f7"/>
-  <text x="1060" y="536" text-anchor="middle" font-family="Inter,Helvetica,Arial,sans-serif" font-size="12" fill="#0a0a0b">THERE</text>
-  <text x="1128" y="590" text-anchor="end" font-family="Inter,Helvetica,Arial,sans-serif" font-size="12" letter-spacing="2" fill="#6e6e73">RULER OF WISDOM</text>
-</svg>`;
-
-export default function handler(req, res) {
-  res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
-  res.setHeader("Cache-Control", "public, max-age=86400, immutable");
-  res.status(200).send(SVG);
-}
+const B64="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";
+export default function handler(req,res){res.setHeader("Content-Type","image/jpeg");res.setHeader("Cache-Control","public, max-age=86400, immutable");res.status(200).send(Buffer.from(B64,"base64"));}
