@@ -7,7 +7,7 @@ function allowed(k) {
 }
 
 function key() {
-  return process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+  return process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 }
 
 function headers() {

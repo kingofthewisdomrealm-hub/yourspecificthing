@@ -2,7 +2,7 @@ const SB = process.env.SUPABASE_URL || "https://rmrbvgmgitmqvcwgdnvl.supabase.co
 const KINDS = new Set(["there", "here", "step", "done"]);
 
 function key() {
-  return process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+  return process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 }
 
 function headers(extra) {
