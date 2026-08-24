@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0a0b"/>
+  <text x="72" y="52" font-family="Inter,Helvetica,Arial,sans-serif" font-size="14" letter-spacing="3" fill="#86868b">YOUR SPECIFIC THING</text>
+  <text x="72" y="200" font-family="Inter,Helvetica,Arial,sans-serif" font-size="64" font-weight="600" fill="#f5f5f7">What is your</text>
+  <text x="72" y="280" font-family="Inter,Helvetica,Arial,sans-serif" font-size="64" font-weight="600" fill="#f5f5f7">specific thing?</text>
+  <text x="72" y="380" font-family="Inter,Helvetica,Arial,sans-serif" font-size="24" fill="#86868b">Name it. Tell the truth about where you are.</text>
+  <text x="72" y="420" font-family="Inter,Helvetica,Arial,sans-serif" font-size="24" fill="#86868b">The road in between starts empty.</text>
+  <circle cx="140" cy="530" r="36" fill="none" stroke="#3a3a3c" stroke-width="2"/>
+  <text x="140" y="536" text-anchor="middle" font-family="Inter,Helvetica,Arial,sans-serif" font-size="12" fill="#86868b">HERE</text>
+  <line x1="190" y1="530" x2="1020" y2="530" stroke="#3a3a3c" stroke-width="2"/>
+  <circle cx="1060" cy="530" r="36" fill="#f5f5f7"/>
+  <text x="1060" y="536" text-anchor="middle" font-family="Inter,Helvetica,Arial,sans-serif" font-size="12" fill="#0a0a0b">THERE</text>
+  <text x="1128" y="590" text-anchor="end" font-family="Inter,Helvetica,Arial,sans-serif" font-size="12" letter-spacing="2" fill="#6e6e73">RULER OF WISDOM</text>
+</svg>
