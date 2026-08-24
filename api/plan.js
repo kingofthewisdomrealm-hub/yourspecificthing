@@ -1,4 +1,5 @@
 const SB = process.env.SUPABASE_URL || "https://rmrbvgmgitmqvcwgdnvl.supabase.co";
+const WISDOM_TO = "wisdom@yourspecificthing.com";
 
 function key() {
   return process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
@@ -54,7 +55,28 @@ function planText(name, there, here, steps) {
   return lines.join("\n");
 }
 
-async function sendEmail(to, name, there, here, steps) {
+function notifyText(name, email, there, here, steps) {
+  const lines = [
+    "New plan signup",
+    "",
+    "Name: " + name,
+    "Email: " + email,
+    "",
+    "Your specific thing",
+    there,
+    "",
+    "The truth right now",
+    here,
+    "",
+    "Steps",
+  ];
+  (steps || []).forEach(function (s, i) {
+    lines.push((i + 1) + ". " + s);
+  });
+  return lines.join("\n");
+}
+
+async function sendResend(to, subject, text) {
   const apiKey = process.env.RESEND_API_KEY || "";
   if (!apiKey) return false;
   const from = process.env.RESEND_FROM || "Your Specific Thing <onboarding@resend.dev>";
@@ -67,8 +89,8 @@ async function sendEmail(to, name, there, here, steps) {
     body: JSON.stringify({
       from: from,
       to: [to],
-      subject: "Your specific plan",
-      text: planText(name, there, here, steps),
+      subject: subject,
+      text: text,
     }),
   });
   return r.ok;
@@ -93,6 +115,8 @@ export default async function handler(req, res) {
     if (sessionId.length < 8 || name.length < 2 || !isEmail(email) || there.length < 3 || here.length < 3) {
       return res.status(400).json({ ok: false });
     }
+
+    // Always save name + email + plan to the database first
     const payload = JSON.stringify({ name: name, email: email, there: there, here: here, steps: steps });
     const r = await fetch(SB + "/rest/v1/yst_events", {
       method: "POST",
@@ -104,13 +128,25 @@ export default async function handler(req, res) {
       }),
     });
     if (!r.ok) return res.status(500).json({ ok: false });
+
     let emailed = false;
+    let notified = false;
     try {
-      emailed = await sendEmail(email, name, there, here, steps);
+      emailed = await sendResend(email, "Your specific plan", planText(name, there, here, steps));
     } catch (e) {
       emailed = false;
     }
-    return res.status(200).json({ ok: true, emailed: emailed });
+    try {
+      notified = await sendResend(
+        WISDOM_TO,
+        "New plan: " + name,
+        notifyText(name, email, there, here, steps)
+      );
+    } catch (e) {
+      notified = false;
+    }
+
+    return res.status(200).json({ ok: true, emailed: emailed, notified: notified });
   } catch (e) {
     return res.status(500).json({ ok: false });
   }
